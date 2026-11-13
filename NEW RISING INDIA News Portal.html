@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEW RISING INDIA (न्यू राइजिंग इंडिया) - ताज़ा हिंदी समाचार, देश-विदेश, क्रिकेट और बिजनेस न्यूज़</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Sans Devanagari & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans Devanagari"', 'Inter', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        brandRed: '#D91E2A',
+                        brandDarkRed: '#B0141E',
+                        brandSoftRed: '#FDECEC',
+                        brandBorderRed: '#E5989B',
+                        brandNavy: '#111827',
+                        brandGray: '#F8F9FA'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+            background-color: #FFFFFF;
+            color: #1A1A1A;
+            overflow-x: hidden;
+        }
+        /* Hide scrollbars cleanly for horizontal nav & trending tags */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 antialiased selection:bg-brandRed selection:text-white">
+
+    <!-- Toast Notification Banner (Replaces alert()) -->
+    <div id="toastBanner" class="fixed bottom-5 right-5 z-50 hidden transform transition-all duration-300 translate-y-4 opacity-0">
+        <div class="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-gray-700 flex items-center gap-3 text-sm font-medium">
+            <i class="fa-solid fa-circle-check text-green-400 text-base"></i>
+            <span id="toastMessage">सूचना अपडेट हो गई है</span>
+        </div>
+    </div>
+
+    <!-- Side Navigation Drawer (Mobile & Desktop) -->
+    <div id="sideDrawerOverlay" onclick="toggleDrawer(false)" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity"></div>
+    <aside id="sideDrawer" class="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white z-50 shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-4 border-b border-gray-200 flex items-center justify-between bg-brandGray">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-lg bg-brandRed text-white flex items-center justify-center font-extrabold text-lg shadow-sm border border-amber-300">
+                    NRI
+                </div>
+                <div>
+                    <div class="font-extrabold text-brandRed text-base leading-none tracking-tight">NEW RISING INDIA</div>
+                    <div class="text-[11px] text-gray-600 font-semibold mt-0.5">न्यू राइजिंग इंडिया</div>
+                </div>
+            </div>
+            <button onclick="toggleDrawer(false)" class="p-2 text-gray-600 hover:text-brandRed rounded-lg hover:bg-gray-100">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Search inside drawer -->
+        <div class="p-3 border-b border-gray-100 sm:hidden">
+            <div class="relative">
+                <input type="text" id="mobileSearchInput" onkeyup="handleSearch(this.value)" placeholder="यहाँ लिखें..." class="w-full pl-3.5 pr-9 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-brandRed">
+                <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-2.5 text-gray-400 text-sm"></i>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 space-y-5">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">मुख्य सेक्शन (Categories)</p>
+                <div id="drawerCategories" class="grid grid-cols-2 gap-2">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <div class="border-t border-gray-200 pt-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">त्वरित सेवाएं</p>
+                <div class="space-y-1.5 text-sm font-medium">
+                    <button onclick="toggleDrawer(false); openEPaperModal();" class="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-brandSoftRed hover:text-brandRed text-left transition">
+                        <i class="fa-regular fa-newspaper text-brandRed w-5"></i> आज का ई-पेपर (E-Paper)
+                    </button>
+                    <button onclick="toggleDrawer(false); openLiveScoreModal();" class="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-brandSoftRed hover:text-brandRed text-left transition">
+                        <i class="fa-solid fa-baseball-bat-ball text-brandRed w-5"></i> लाइव क्रिकेट स्कोर
+                    </button>
+                    <button onclick="toggleDrawer(false); openRashifalModal();" class="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-brandSoftRed hover:text-brandRed text-left transition">
+                        <i class="fa-solid fa-star-and-crescent text-brandRed w-5"></i> दैनिक राशिफल 2026
+                    </button>
+                    <button onclick="toggleDrawer(false); openSignInModal();" class="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-brandSoftRed hover:text-brandRed text-left transition">
+                        <i class="fa-regular fa-user text-brandRed w-5"></i> पाठक लॉगिन / साइन इन
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-3.5 bg-gray-50 border-t border-gray-200 text-xs text-gray-500 flex justify-between items-center">
+            <span>शुक्रवार, 13 नवंबर 2026</span>
+            <span class="text-brandRed font-semibold">24x7 लाइव</span>
+        </div>
+    </aside>
+
+    <!-- TOP UTILITY HEADER BAR (Matches Reference Layout) -->
+    <header class="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-xs">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-2">
+                
+                <!-- Left: Hamburger + Emblem Logo -->
+                <div class="flex items-center gap-2.5 sm:gap-4 shrink-0">
+                    <button onclick="toggleDrawer(true)" aria-label="Menu" class="p-2.5 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-brandRed transition focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+
+                    <a href="#" onclick="resetToHome(event)" class="flex items-center gap-2.5 group">
+                        <!-- Custom Shield Emblem SVG matching Hindustan style -->
+                        <div class="relative w-10 h-11 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+                            <svg viewBox="0 0 64 70" class="w-full h-full drop-shadow-xs">
+                                <path d="M32 2 L60 12 V34 C60 51 47 62 32 68 C17 62 4 51 4 34 V12 Z" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="2.5"/>
+                                <path d="M32 6 L55 15 V34 C55 48 44 58 32 63 C20 58 9 48 9 34 V15 Z" fill="#D91E2A"/>
+                                <path d="M16 42 L26 28 L34 36 L48 20" stroke="#FBBF24" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="48" cy="20" r="3.5" fill="#FFFFFF"/>
+                                <text x="32" y="54" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="800" font-family="Inter, sans-serif">NRI</text>
+                            </svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xl sm:text-3xl font-extrabold tracking-tight text-brandRed leading-none">
+                                    NEW RISING INDIA
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[11px] sm:text-xs font-bold text-gray-700 tracking-wide">न्यू राइजिंग इंडिया</span>
+                                <span class="hidden md:inline-block text-[10px] px-1.5 py-0.2 bg-brandSoftRed text-brandRed font-semibold rounded">विश्वसनीय हिंदी समाचार</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Right: Utility Action Links + Search Box -->
+                <div class="flex items-center gap-2 sm:gap-4 lg:gap-5">
+                    
+                    <!-- फोटो (Photos) -->
+                    <button onclick="filterByMedia('photo')" class="hidden md:flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-brandRed transition py-2">
+                        <i class="fa-regular fa-image text-brandRed text-base"></i>
+                        <span>फोटो</span>
+                    </button>
+
+                    <!-- वीडियो (Videos) -->
+                    <button onclick="filterByMedia('video')" class="hidden md:flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-brandRed transition py-2">
+                        <i class="fa-solid fa-video text-brandRed text-base"></i>
+                        <span>वीडियो</span>
+                    </button>
+
+                    <!-- शहर चुनें (City Selector Dropdown) -->
+                    <div class="relative">
+                        <button onclick="toggleCityDropdown()" class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-gray-700 hover:text-brandRed transition py-2 px-2 rounded-lg hover:bg-gray-50">
+                            <i class="fa-solid fa-location-dot text-brandRed text-sm sm:text-base"></i>
+                            <span id="selectedCityLabel">शहर चुनें</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+                        </button>
+                        <div id="cityDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                            <div class="px-3 py-1.5 text-[11px] font-bold text-gray-400 border-b border-gray-100">अपना शहर चुनें</div>
+                            <button onclick="selectCity('सभी शहर')" class="w-full text-left px-3.5 py-2 text-sm hover:bg-brandSoftRed hover:text-brandRed font-medium">सभी शहर (राष्ट्रीय)</button>
+                            <button onclick="selectCity('अलीगढ़')" class="w-full text-left px-3.5 py-2 text-sm hover:bg-brandSoftRed hover:text-brandRed font-medium">अलीगढ़ (उत्तर प्रदेश)</button>
+                            <button onclick="selectCity('लखनऊ')" class="w-full text-left px-3.5 py-2 text-sm hover:bg-brandSoftRed hover:text-brandRed font-medium">लखनऊ</button>
+                            <button onclick="selectCity('नई दिल्ली')" class="w-full text-left px-3.5 py-2 text-sm hover:bg-brandSoftRed hover:text-brandRed font-medium">नई दिल्ली</button>
+                            <button onclick="selectCity('पटना')" class="w-full text-left px-3.5 py-2 text-sm hover:bg-brandSoftRed hover:text-brandRed font-medium">पटना</button>
+                            <button onclick="selectCity('मुंबई')" class="w-full text-left px-3.5 py-2 text-sm hover:bg-brandSoftRed hover:text-brandRed font-medium">मुंबई</button>
+                            <button onclick="selectCity('जयपुर')" class="w-full text-left px-3.5 py-2 text-sm hover:bg-brandSoftRed hover:text-brandRed font-medium">जयपुर</button>
+                            <button onclick="selectCity('देहरादून')" class="w-full text-left px-3.5 py-2 text-sm hover:bg-brandSoftRed hover:text-brandRed font-medium">देहरादून</button>
+                        </div>
+                    </div>
+
+                    <!-- ई-पेपर (E-Paper) -->
+                    <button onclick="openEPaperModal()" class="hidden sm:flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-brandRed transition py-2">
+                        <i class="fa-regular fa-newspaper text-brandRed text-base"></i>
+                        <span>ई-पेपर</span>
+                    </button>
+
+                    <!-- साइन इन (Sign In) -->
+                    <button onclick="openSignInModal()" id="signInBtn" class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-gray-700 hover:text-brandRed transition py-2 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fa-regular fa-user text-brandRed text-sm sm:text-base"></i>
+                        <span id="signInLabel">साइन इन</span>
+                    </button>
+
+                    <!-- Search Bar ('यहाँ लिखें') -->
+                    <div class="hidden lg:flex items-center relative w-56 xl:w-64">
+                        <input type="text" id="desktopSearchInput" onkeyup="handleSearch(this.value)" placeholder="यहाँ लिखें..." 
+                               class="w-full pl-4 pr-10 py-2 text-sm bg-white border border-gray-300 rounded-full focus:outline-none focus:border-brandRed focus:ring-1 focus:ring-brandRed transition placeholder-gray-400">
+                        <button onclick="handleSearch(document.getElementById('desktopSearchInput').value)" class="absolute right-3 text-gray-400 hover:text-brandRed">
+                            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CATEGORY NAVIGATION BAR -->
+        <nav class="border-t border-gray-100 bg-white">
+            <div class="max-w-7xl mx-auto px-3 sm:px-6">
+                <div id="categoryNav" class="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-2">
+                    <!-- Rendered dynamically via JS -->
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-3 sm:px-6 pt-3 pb-12">
+
+        <!-- TRENDING PILLS / TAG CAROUSEL BAR (Matches Reference Screenshot) -->
+        <div class="relative flex items-center gap-2 py-2.5 mb-3">
+            <button onclick="scrollTags(-220)" aria-label="Scroll Left" class="w-8 h-8 rounded-full bg-gray-800 hover:bg-brandRed text-white flex items-center justify-center shrink-0 shadow-xs transition cursor-pointer">
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+            </button>
+
+            <div id="trendingTagsContainer" class="flex items-center gap-2.5 overflow-x-auto no-scrollbar scroll-smooth flex-1 py-0.5">
+                <!-- Rendered dynamically via JS -->
+            </div>
+
+            <button onclick="scrollTags(220)" aria-label="Scroll Right" class="w-8 h-8 rounded-full bg-gray-800 hover:bg-brandRed text-white flex items-center justify-center shrink-0 shadow-xs transition cursor-pointer">
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+        </div>
+
+        <!-- Active Filter / Search Status Bar (Shows when user filters by tag, city, or search) -->
+        <div id="activeFilterBar" class="hidden mb-4 px-4 py-2.5 bg-brandSoftRed border border-brandBorderRed rounded-xl flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2 text-sm">
+                <span class="w-2 h-2 rounded-full bg-brandRed animate-pulse"></span>
+                <span class="font-bold text-brandRed" id="activeFilterText">फ़िल्टर सक्रिय</span>
+            </div>
+            <button onclick="resetToHome()" class="text-xs font-bold text-gray-700 hover:text-brandRed bg-white px-3 py-1 rounded-full border border-gray-200 shadow-2xs">
+                सभी खबरें दिखाएं ✕
+            </button>
+        </div>
+
+        <!-- VIEW 1: HOME / CATEGORY 3-COLUMN EDITORIAL GRID -->
+        <div id="homeGridView">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- LEFT + MIDDLE COLUMNS (8 Columns on Desktop) -->
+                <div class="lg:col-span-8">
+                    <!-- Section Header: | Top Hindi News -------- -->
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="w-1 h-5 bg-brandRed rounded-xs"></span>
+                            <h1 id="mainSectionHeading" class="text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight">
+                                Top Hindi News
+                            </h1>
+                        </div>
+                        <div class="h-[1.5px] bg-brandRed/70 flex-1"></div>
+                    </div>
+
+                    <!-- Nested 2-Column Editorial Split (Matches Hindustan Lead + Middle Feed) -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+                        
+                        <!-- LEAD FEATURED STORY COLUMN (6 cols of 12) -->
+                        <div class="md:col-span-6 flex flex-col gap-4" id="leadStoryContainer">
+                            <!-- Populated by JS -->
+                        </div>
+
+                        <!-- MIDDLE NEWS FEED COLUMN (6 cols of 12) -->
+                        <div class="md:col-span-6 flex flex-col divide-y divide-gray-200" id="middleFeedContainer">
+                            <!-- Populated by JS -->
+                        </div>
+
+                    </div>
+
+                    <!-- MORE NEWS SECTION BELOW THE FOLD -->
+                    <div class="mt-8 pt-6 border-t border-gray-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="flex items-center gap-2 shrink-0">
+                                <span class="w-1 h-5 bg-brandRed rounded-xs"></span>
+                                <h2 class="text-lg font-extrabold text-gray-900">ताज़ा और बड़ी खबरें</h2>
+                            </div>
+                            <div class="h-[1px] bg-gray-300 flex-1"></div>
+                        </div>
+                        <div id="moreNewsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDEBAR COLUMN (4 Columns on Desktop) -->
+                <aside class="lg:col-span-4 space-y-6">
+                    
+                    <!-- Sponsored / Public Notice Banner (Styled like reference screenshot) -->
+                    <div>
+                        <div class="text-[11px] text-center text-gray-400 mb-1">विज्ञापन / विशेष अभियान</div>
+                        <div onclick="openArticleById('art-digital-india')" class="cursor-pointer rounded-xl overflow-hidden border border-amber-200 shadow-sm bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 hover:shadow-md transition group">
+                            <div class="bg-brandRed text-white px-3.5 py-2 flex items-center justify-between">
+                                <span class="text-xs font-bold tracking-wide">NEW RISING INDIA • विशेष पहल</span>
+                                <span class="text-[10px] bg-amber-300 text-gray-900 font-extrabold px-2 py-0.5 rounded-full">2026 मिशन</span>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex items-center gap-3 mb-2.5">
+                                    <div class="w-12 h-12 rounded-xl bg-brandRed/10 border border-brandRed/20 flex items-center justify-center text-brandRed shrink-0">
+                                        <i class="fa-solid fa-scale-balanced text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-bold text-brandRed">विकसित भारत • युवा कौशल एवं रोजगार</div>
+                                        <h3 class="text-base font-extrabold text-gray-900 leading-snug group-hover:text-brandRed transition">
+                                            डिजिटल इंडिया और स्टार्टअप मिशन: 2026 में युवाओं के लिए नए अवसर
+                                        </h3>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-600 leading-relaxed mb-3">
+                                    देश के हर जिले में डिजिटल कौशल केंद्र और सेमीकंडक्टर व एआई प्रशिक्षण से करोड़ों युवाओं को मिल रहा नया मंच।
+                                </p>
+                                <div class="flex items-center justify-between pt-2.5 border-t border-amber-200/80 text-xs font-bold text-brandRed">
+                                    <span>पूरी रिपोर्ट पढ़ें</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LIVE CRICKET SCORE MINI WIDGET -->
+                    <div class="rounded-xl border border-gray-200 bg-white shadow-2xs overflow-hidden">
+                        <div class="bg-gray-900 text-white px-3.5 py-2.5 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                                <span class="text-xs font-bold tracking-wide uppercase">लाइव क्रिकेट स्कोर</span>
+                            </div>
+                            <button onclick="openLiveScoreModal()" class="text-[11px] text-amber-300 hover:underline font-semibold">फुल स्कोरकार्ड →</button>
+                        </div>
+                        <div class="p-3.5 space-y-2.5">
+                            <div class="text-[11px] font-semibold text-gray-500 flex justify-between">
+                                <span>भारत बनाम ऑस्ट्रेलिया • 3रा वनडे</span>
+                                <span class="text-brandRed font-bold">LIVE</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm font-bold">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-[10px] flex items-center justify-center font-extrabold">IND</span>
+                                    <span>भारत (IND)</span>
+                                </div>
+                                <span class="font-inter text-gray-900">284/4 <span class="text-xs font-normal text-gray-500">(44.2 Ov)</span></span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm font-medium text-gray-600">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-yellow-500 text-gray-900 text-[10px] flex items-center justify-center font-extrabold">AUS</span>
+                                    <span>ऑस्ट्रेलिया (AUS)</span>
+                                </div>
+                                <span class="font-inter text-xs text-gray-500">टॉस जीतकर गेंदबाजी</span>
+                            </div>
+                            <div class="text-xs bg-brandSoftRed text-brandRed font-semibold px-2.5 py-1.5 rounded-lg">
+                                शुभमन गिल 112* और सूर्यकुमार यादव 58* क्रीज पर डटे हुए हैं।
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- | जरूर पढ़ें (MUST READ SECTION - Matches Reference Sidebar) -->
+                    <div>
+                        <div class="flex items-center gap-2.5 mb-3">
+                            <span class="w-1 h-5 bg-brandRed rounded-xs"></span>
+                            <h2 class="text-lg font-extrabold text-gray-900">जरूर पढ़ें</h2>
+                            <div class="h-[1px] bg-gray-200 flex-1"></div>
+                        </div>
+                        <div id="mustReadContainer" class="divide-y divide-gray-200 bg-white rounded-xl border border-gray-200 px-3.5">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                </aside>
+            </div>
+        </div>
+
+        <!-- VIEW 2: FULL ARTICLE READER VIEW (Opens when clicking any news card) -->
+        <div id="articleReaderView" class="hidden">
+            <div class="mb-4">
+                <button onclick="closeArticleReader()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-brandRed hover:text-white text-gray-800 text-sm font-bold transition">
+                    <i class="fa-solid fa-arrow-left"></i> वापस मुख्य खबरों पर जाएं
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Main Article Content (8 Cols) -->
+                <article id="articleContentArea" class="lg:col-span-8 bg-white rounded-2xl border border-gray-200 p-4 sm:p-7 shadow-2xs">
+                    <!-- Populated dynamically when an article is opened -->
+                </article>
+
+                <!-- Related Stories Sidebar (4 Cols) -->
+                <aside class="lg:col-span-4 space-y-5">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-1 h-5 bg-brandRed rounded-xs"></span>
+                        <h3 class="text-lg font-extrabold text-gray-900">संबंधित खबरें (Related News)</h3>
+                    </div>
+                    <div id="relatedArticlesContainer" class="divide-y divide-gray-200 border border-gray-200 rounded-xl px-3.5 bg-white">
+                        <!-- Populated dynamically -->
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 border-t-4 border-brandRed">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-gray-800">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-2.5 mb-3">
+                        <div class="w-9 h-9 rounded-lg bg-brandRed text-white flex items-center justify-center font-extrabold text-base border border-amber-300">
+                            NRI
+                        </div>
+                        <div>
+                            <div class="font-extrabold text-white text-xl tracking-tight">NEW RISING INDIA</div>
+                            <div class="text-xs text-gray-400">न्यू राइजिंग इंडिया • भारत का तेज़ और विश्वसनीय न्यूज़ नेटवर्क</div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed max-w-md">
+                        NEW RISING INDIA आपको देश, दुनिया, उत्तर प्रदेश, बिहार, क्रिकेट, व्यापार, शिक्षा और मनोरंजन की हर बड़ी और प्रमाणिक खबर सबसे पहले हिंदी और अंग्रेजी में उपलब्ध कराता है।
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">मुख्य श्रेणियां</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" onclick="selectCategory('देश', event)" class="hover:text-white transition">देश और राजनीति</a></li>
+                        <li><a href="#" onclick="selectCategory('राज्य', event)" class="hover:text-white transition">राज्य समाचार (UP / Bihar)</a></li>
+                        <li><a href="#" onclick="selectCategory('क्रिकेट', event)" class="hover:text-white transition">क्रिकेट और खेल</a></li>
+                        <li><a href="#" onclick="selectCategory('बिजनेस', event)" class="hover:text-white transition">बिजनेस और मार्केट</a></li>
+                        <li><a href="#" onclick="selectCategory('करियर', event)" class="hover:text-white transition">करियर और सरकारी नौकरी</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">संपर्क और संपादकीय</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><i class="fa-solid fa-location-dot text-brandRed mr-2"></i>नई दिल्ली एवं अलीगढ़ ब्यूरो, भारत</li>
+                        <li><i class="fa-solid fa-envelope text-brandRed mr-2"></i>editorial@newrisingindia.in</li>
+                        <li class="pt-2 flex items-center gap-3">
+                            <button onclick="showToast('NEW RISING INDIA के आधिकारिक X (Twitter) पेज से जुड़ें')" class="w-8 h-8 rounded-full bg-gray-800 hover:bg-brandRed text-white flex items-center justify-center transition"><i class="fa-brands fa-x-twitter text-sm"></i></button>
+                            <button onclick="showToast('NEW RISING INDIA के YouTube चैनल पर लाइव खबरें देखें')" class="w-8 h-8 rounded-full bg-gray-800 hover:bg-brandRed text-white flex items-center justify-center transition"><i class="fa-brands fa-youtube text-sm"></i></button>
+                            <button onclick="showToast('NEW RISING INDIA के Facebook पेज से जुड़ें')" class="w-8 h-8 rounded-full bg-gray-800 hover:bg-brandRed text-white flex items-center justify-center transition"><i class="fa-brands fa-facebook-f text-sm"></i></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-2">
+                <p>© 2026 NEW RISING INDIA (न्यू राइजिंग इंडिया) Media Network. सर्वाधिकार सुरक्षित।</p>
+                <p>गोपनीयता नीति • नियम एवं शर्तें • विज्ञापन संपर्क</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODALS: E-Paper, Live Score, Rashifal, Sign In -->
+    <div id="modalBackdrop" onclick="closeAllModals()" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        
+        <!-- E-Paper Modal -->
+        <div id="ePaperModal" onclick="event.stopPropagation()" class="hidden bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-gray-200">
+            <div class="bg-brandRed text-white px-5 py-3.5 flex items-center justify-between">
+                <div class="flex items-center gap-2 font-bold">
+                    <i class="fa-regular fa-newspaper"></i>
+                    <span>NEW RISING INDIA • डिजिटल ई-पेपर (13 नवंबर 2026)</span>
+                </div>
+                <button onclick="closeAllModals()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-5 space-y-4">
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded-full bg-brandSoftRed text-brandRed text-xs font-bold">राष्ट्रीय संस्करण</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">उत्तर प्रदेश • अलीगढ़/लखनऊ</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">बिहार • पटना</span>
+                </div>
+                <div class="border-2 border-gray-300 rounded-xl p-4 bg-stone-50 font-serif">
+                    <div class="border-b-2 border-gray-900 pb-2 mb-3 flex justify-between items-end">
+                        <div>
+                            <div class="text-2xl font-black text-brandRed tracking-tight font-sans">NEW RISING INDIA</div>
+                            <div class="text-[11px] text-gray-600 font-sans">शुक्रवार, 13 नवंबर 2026 • पृष्ठ 1 • मूल्य ₹5.00</div>
+                        </div>
+                        <span class="text-xs font-bold bg-gray-900 text-white px-2 py-0.5 font-sans">प्रभात संस्करण</span>
+                    </div>
+                    <h4 class="text-lg font-extrabold text-gray-900 mb-1.5 font-sans">
+                        देश में सेमीकंडक्टर और हरित ऊर्जा निवेश में रिकॉर्ड उछाल, 12 नए औद्योगिक गलियारों को मिली हरी झंडी
+                    </h4>
+                    <p class="text-xs text-gray-700 leading-relaxed font-sans mb-3">
+                        नई दिल्ली। भारत की विनिर्माण और डिजिटल अर्थव्यवस्था को नई रफ्तार देते हुए केंद्र सरकार ने उत्तर भारत सहित 8 राज्यों में आधुनिक इलेक्ट्रॉनिक्स और हरित ऊर्जा क्लस्टर स्थापित करने की कार्ययोजना को मंजूरी दे दी है।
+                    </p>
+                    <button onclick="closeAllModals(); openArticleById('art-lead-infra');" class="w-full py-2.5 bg-brandRed hover:bg-brandDarkRed text-white font-bold text-sm rounded-lg font-sans transition">
+                        ई-पेपर का पूरा लेख विस्तार से पढ़ें
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Score Modal -->
+        <div id="liveScoreModal" onclick="event.stopPropagation()" class="hidden bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border border-gray-200">
+            <div class="bg-gray-900 text-white px-5 py-3.5 flex items-center justify-between">
+                <div class="flex items-center gap-2 font-bold text-sm">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+                    <span>लाइव मैच सेंटर • भारत बनाम ऑस्ट्रेलिया</span>
+                </div>
+                <button onclick="closeAllModals()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-5 space-y-4">
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="font-extrabold text-base text-blue-800">🇮🇳 भारत (IND)</span>
+                        <span class="font-inter font-extrabold text-lg">284/4 (44.2 ओवर)</span>
+                    </div>
+                    <div class="flex justify-between items-center text-gray-600">
+                        <span class="font-bold text-sm">🇦🇺 ऑस्ट्रेलिया (AUS)</span>
+                        <span class="text-xs font-semibold">गेंदबाजी जारी • CRR: 6.41</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold uppercase text-gray-400 mb-2">प्रमुख बल्लेबाज</h4>
+                    <div class="divide-y divide-gray-100 text-sm border border-gray-200 rounded-xl px-3">
+                        <div class="py-2 flex justify-between font-bold">
+                            <span>शुभमन गिल*</span>
+                            <span class="font-inter">112 (98 गेंद, 11×4, 3×6)</span>
+                        </div>
+                        <div class="py-2 flex justify-between font-bold">
+                            <span>सूर्यकुमार यादव*</span>
+                            <span class="font-inter">58 (34 गेंद, 5×4, 3×6)</span>
+                        </div>
+                        <div class="py-2 flex justify-between text-gray-600">
+                            <span>विराट कोहली</span>
+                            <span class="font-inter">64 (59 गेंद)</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closeAllModals(); openArticleById('art-cricket-ind');" class="w-full py-2.5 bg-brandRed text-white font-bold text-sm rounded-xl hover:bg-brandDarkRed transition">
+                    मैच की पूरी लाइव रिपोर्ट पढ़ें
+                </button>
+            </div>
+        </div>
+
+        <!-- Rashifal Modal -->
+        <div id="rashifalModal" onclick="event.stopPropagation()" class="hidden bg-white rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl border border-gray-200">
+            <div class="bg-brandRed text-white px-5 py-3.5 flex items-center justify-between">
+                <div class="flex items-center gap-2 font-bold">
+                    <i class="fa-solid fa-sun"></i>
+                    <span>आज का राशिफल • शुक्रवार, 13 नवंबर 2026</span>
+                </div>
+                <button onclick="closeAllModals()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-5">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs mb-4">
+                    <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+                        <div class="font-extrabold text-brandRed">♈ मेष (Aries)</div>
+                        <p class="text-gray-700 mt-1">कार्यक्षेत्र में नई जिम्मेदारी मिलेगी, आर्थिक लाभ के प्रबल योग हैं।</p>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+                        <div class="font-extrabold text-brandRed">♉ वृषभ (Taurus)</div>
+                        <p class="text-gray-700 mt-1">परिवार में सुखद समाचार मिलेगा, रुका हुआ धन वापस आ सकता है।</p>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+                        <div class="font-extrabold text-brandRed">♊ मिथुन (Gemini)</div>
+                        <p class="text-gray-700 mt-1">व्यापारिक यात्रा सफल रहेगी, छात्रों को प्रतियोगी परीक्षा में शुभ संकेत।</p>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+                        <div class="font-extrabold text-brandRed">♌ सिंह (Leo)</div>
+                        <p class="text-gray-700 mt-1">आत्मविश्वास में वृद्धि होगी, वरिष्ठ अधिकारियों का पूरा सहयोग मिलेगा।</p>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+                        <div class="font-extrabold text-brandRed">♎ तुला (Libra)</div>
+                        <p class="text-gray-700 mt-1">नए निवेश की योजना बनेगी, स्वास्थ्य के प्रति थोड़ा सजग रहें।</p>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+                        <div class="font-extrabold text-brandRed">♑ मकर (Capricorn)</div>
+                        <p class="text-gray-700 mt-1">सामाजिक मान-सम्मान बढ़ेगा, रुके हुए सरकारी कार्य पूरे होंगे।</p>
+                    </div>
+                </div>
+                <button onclick="closeAllModals(); openArticleById('art-rashifal');" class="w-full py-2.5 bg-gray-900 text-white font-bold text-sm rounded-xl hover:bg-brandRed transition">
+                    सभी 12 राशियों का विस्तृत फल पढ़ें
+                </button>
+            </div>
+        </div>
+
+        <!-- Sign In Modal -->
+        <div id="signInModal" onclick="event.stopPropagation()" class="hidden bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-gray-200">
+            <div class="bg-brandRed text-white px-5 py-3.5 flex items-center justify-between">
+                <span class="font-bold">NEW RISING INDIA • पाठक लॉगिन</span>
+                <button onclick="closeAllModals()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form onsubmit="handleSignInSubmit(event)" class="p-5 space-y-4">
+                <p class="text-xs text-gray-600">अपने शहर की ताज़ा खबरें, ई-पेपर और बुकमार्क सहेजने के लिए साइन इन करें।</p>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">आपका नाम</label>
+                    <input type="text" id="readerNameInput" required placeholder="उदा. राहुल शर्मा" class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-brandRed">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">ईमेल या मोबाइल नंबर</label>
+                    <input type="text" required placeholder="name@example.com" class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-brandRed">
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-brandRed hover:bg-brandDarkRed text-white font-bold text-sm rounded-xl transition">
+                    साइन इन करें
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- APPLICATION DATA & INTERACTIVE LOGIC -->
+    <script>
+        // Categories matching the reference navigation bar
+        const CATEGORIES = [
+            'होम', 'राज्य', 'देश', 'क्राइम', 'क्रिकेट', 'लाइव स्कोर',
+            'मनोरंजन', 'बिजनेस', 'करियर', 'विदेश', 'धर्म', 'राशिफल'
+        ];
+
+        // Trending Pill Tags matching the reference pill carousel
+        const TRENDING_TAGS = [
+            'विकसित भारत मिशन 2026',
+            'यूपी-अलीगढ़ समाचार',
+            'भारत बनाम ऑस्ट्रेलिया LIVE',
+            'शेयर बाजार और सोना-चांदी',
+            'सरकारी नौकरी 2026',
+            'एआई और डिजिटल इंडिया',
+            'राशिफल आज का',
+            'बॉलीवुड बॉक्स ऑफिस'
+        ];
+
+        // Authentic, rich Hindi/English News Dataset with Verified High-Resolution Unsplash Images
+        const NEWS_ARTICLES = [
+            {
+                id: 'art-lead-infra',
+                title: 'देश में एक्सप्रेसवे और हाई-स्पीड रेल नेटवर्क का ऐतिहासिक विस्तार, 12 नए औद्योगिक गलियारों को मिली मंजूरी',
+                summary: 'केंद्र सरकार ने उत्तर भारत सहित 8 राज्यों में आधुनिक लॉजिस्टिक्स हब और ग्रीन एनर्जी कॉरिडोर विकसित करने के लिए ₹1.45 लाख करोड़ की परियोजना को हरी झंडी दी है।',
+                category: 'देश',
+                tag: 'विकसित भारत मिशन 2026',
+                city: 'नई दिल्ली',
+                author: 'संजय कुमार मिश्र • विशेष संवाददाता',
+                time: 'Nov 13, 2026 05:45 PM IST',
+                mediaType: 'video',
+                isLead: true,
+                isMustRead: false,
+                image: 'https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&w=1200&q=80',
+                body: [
+                    'नई दिल्ली। भारत के बुनियादी ढांचे (Infrastructure) को वैश्विक स्तर पर प्रतिस्पर्धी बनाने की दिशा में आज एक बड़ा फैसला लिया गया। केंद्रीय मंत्रिमंडल की आर्थिक मामलों की समिति ने देश के विभिन्न हिस्सों को जोड़ने वाले 12 नए औद्योगिक स्मार्ट सिटी और हाई-स्पीड फ्रेट कॉरिडोर परियोजनाओं को मंजूरी दे दी है।',
+                    'इस महत्वाकांक्षी योजना के तहत उत्तर प्रदेश, बिहार, राजस्थान, महाराष्ट्र और गुजरात में आधुनिक लॉजिस्टिक्स पार्क, सेमीकंडक्टर असेंबली यूनिट और स्वच्छ ऊर्जा केंद्र स्थापित किए जाएंगे। इससे प्रत्यक्ष और अप्रत्यक्ष रूप से लगभग 18 लाख नए रोजगार के अवसर सृजित होने का अनुमान है।',
+                    'सड़क परिवहन एवं राजमार्ग मंत्रालय के वरिष्ठ अधिकारियों के अनुसार, दिल्ली-लखनऊ-पटना औद्योगिक बेल्ट को सीधे बंदरगाहों से जोड़ने के लिए एक्सप्रेसवे लिंक का निर्माण अगले महीने से शुरू हो जाएगा। विशेषज्ञों का मानना है कि इससे देश की जीडीपी वृद्धि दर को नई गति मिलेगी।'
+                ]
+            },
+            {
+                id: 'art-sub-lead-up',
+                title: 'यूपी में डिफेंस कॉरिडोर और आधुनिक औद्योगिक पार्कों से बदली तस्वीर, अलीगढ़ व लखनऊ बने निवेश के बड़े केंद्र',
+                summary: 'उत्तर प्रदेश डिफेंस इंडस्ट्रियल कॉरिडोर के अलीगढ़ नोड में 14 नई रक्षा और ड्रोन निर्माण इकाइयों ने उत्पादन शुरू कर दिया है, जिससे हजारों युवाओं को स्थानीय स्तर पर रोजगार मिला है।',
+                category: 'राज्य',
+                tag: 'यूपी-अलीगढ़ समाचार',
+                city: 'अलीगढ़',
+                author: 'अमित शर्मा • राज्य ब्यूरो',
+                time: 'Nov 13, 2026 05:15 PM IST',
+                mediaType: 'photo',
+                isSubLead: true,
+                isMustRead: false,
+                image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=900&q=80',
+                body: [
+                    'अलीगढ़ / लखनऊ। उत्तर प्रदेश को वन ट्रिलियन डॉलर अर्थव्यवस्था बनाने के लक्ष्य की दिशा में डिफेंस इंडस्ट्रियल कॉरिडोर मील का पत्थर साबित हो रहा है। अलीगढ़ नोड में अत्याधुनिक ड्रोन तकनीक, रक्षा उपकरण और हार्डवेयर निर्माण से जुड़ी 14 कंपनियों ने अपना वाणिज्यिक उत्पादन प्रारंभ कर दिया है।',
+                    'जिला प्रशासन और यूपीडा (UPEIDA) के अधिकारियों ने बताया कि दूसरे चरण के लिए भूमि आवंटन की प्रक्रिया भी पूरी कर ली गई है। तकनीकी संस्थानों और आईटीआई से प्रशिक्षित युवाओं को इन इकाइयों में प्राथमिकता के आधार पर नियुक्ति दी जा रही है।',
+                    'स्थानीय उद्यमियों का कहना है कि बेहतर एक्सप्रेसवे कनेक्टिविटी और 24 घंटे निर्बाध बिजली आपूर्ति के कारण अब राष्ट्रीय और अंतरराष्ट्रीय कंपनियां सीधे अलीगढ़ और पश्चिमी उत्तर प्रदेश में निवेश के लिए आगे आ रही हैं।'
+                ]
+            },
+            {
+                id: 'art-cricket-ind',
+                title: 'IND vs AUS: शुभमन गिल का शानदार शतक और सूर्यकुमार की आतिशी पारी, भारत ने खड़ा किया विशाल स्कोर',
+                summary: 'तीसरे निर्णायक वनडे मुकाबले में भारतीय बल्लेबाजों ने कंगारू गेंदबाजों की जमकर खबर ली, शुभमन गिल ने महज 89 गेंदों में अपना शतक पूरा किया।',
+                category: 'क्रिकेट',
+                tag: 'भारत बनाम ऑस्ट्रेलिया LIVE',
+                city: 'मुंबई',
+                author: 'रोहित वर्मा • खेल डेस्क',
+                time: 'Nov 13, 2026 04:50 PM IST',
+                mediaType: 'video',
+                isMiddleFeed: true,
+                isMustRead: false,
+                image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=800&q=80',
+                body: [
+                    'मुंबई। वानखेड़े स्टेडियम में खेले जा रहे भारत और ऑस्ट्रेलिया के बीच तीसरे और निर्णायक एकदिवसीय मुकाबले में टीम इंडिया ने पहले बल्लेबाजी करते हुए मजबूत स्थिति बना ली है। सलामी बल्लेबाज शुभमन गिल ने शानदार फॉर्म जारी रखते हुए शतकीय पारी खेली।',
+                    'विराट कोहली (64 रन) के साथ दूसरे विकेट के लिए 118 रनों की साझेदारी करने के बाद गिल ने सूर्यकुमार यादव के साथ मिलकर अंतिम ओवरों में रन गति को तेजी से बढ़ाया। स्टेडियम में मौजूद हजारों दर्शकों ने हर चौके और छक्के पर जोरदार उत्साहवर्धन किया।',
+                    'भारतीय टीम प्रबंधन को उम्मीद है कि 320 से अधिक का लक्ष्य ऑस्ट्रेलियाई बल्लेबाजी क्रम पर शुरुआती दबाव बनाने में निर्णायक साबित होगा।'
+                ]
+            },
+            {
+                id: 'art-business-market',
+                title: 'शेयर बाजार में ऐतिहासिक तेजी: सेंसेक्स 86,500 के पार, आईटी और बैंकिंग शेयरों में जबरदस्त खरीदारी',
+                summary: 'विदेशी संस्थागत निवेशकों की मजबूत वापसी और महंगाई दर में नरमी के आंकड़ों से घरेलू शेयर बाजार नए शिखर पर पहुंच गया है।',
+                category: 'बिजनेस',
+                tag: 'शेयर बाजार और सोना-चांदी',
+                city: 'मुंबई',
+                author: 'नेहा अग्रवाल • बिजनेस ब्यूरो',
+                time: 'Nov 13, 2026 04:10 PM IST',
+                mediaType: 'none',
+                isMiddleFeed: true,
+                isMustRead: false,
+                image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80',
+                body: [
+                    'मुंबई। घरेलू शेयर बाजार में आज सप्ताह के अंतिम कारोबारी दिन जबरदस्त उत्साह देखने को मिला। बीएसई सेंसेक्स 740 अंकों की छलांग लगाकर 86,540 के स्तर पर बंद हुआ, जबकि एनएसई निफ्टी ने भी 26,300 का मनोवैज्ञानिक स्तर पार कर लिया।',
+                    'बाजार विश्लेषकों के अनुसार दूसरी तिमाही के मजबूत कॉर्पोरेट नतीजों और खुदरा महंगाई दर के नियंत्रण में रहने से निवेशकों का भरोसा बढ़ा है। बैंकिंग, ऑटोमोबाइल और सेमीकंडक्टर से जुड़ी कंपनियों के शेयरों में 3 से 5 प्रतिशत तक की बढ़त दर्ज की गई।',
+                    'वहीं सर्राफा बाजार में सोने की कीमतों में हल्की स्थिरता रही और 24 कैरेट सोना ₹78,400 प्रति 10 ग्राम के आसपास कारोबार करता दिखा।'
+                ]
+            },
+            {
+                id: 'art-career-jobs',
+                title: 'सरकारी नौकरी 2026: रेलवे, बैंकिंग और राज्य लोक सेवा आयोग में 48,000 से अधिक पदों पर भर्ती का कैलेंडर जारी',
+                summary: 'प्रतियोगी परीक्षाओं की तैयारी कर रहे युवाओं के लिए बड़ी खुशखबरी, अगले सप्ताह से शुरू होगी ऑनलाइन आवेदन प्रक्रिया।',
+                category: 'करियर',
+                tag: 'सरकारी नौकरी 2026',
+                city: 'नई दिल्ली',
+                author: 'विवेक तिवारी • एजुकेशन डेस्क',
+                time: 'Nov 13, 2026 03:35 PM IST',
+                mediaType: 'none',
+                isMiddleFeed: true,
+                isMustRead: false,
+                image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80',
+                body: [
+                    'नई दिल्ली। सरकारी नौकरी की तैयारी कर रहे लाखों अभ्यर्थियों के लिए नवंबर का महीना बड़े अवसर लेकर आया है। रेलवे भर्ती बोर्ड (RRB), सार्वजनिक क्षेत्र के बैंकों और विभिन्न राज्य लोक सेवा आयोगों ने संयुक्त रूप से 48,000 से अधिक रिक्तियों का वार्षिक भर्ती कैलेंडर जारी कर दिया है।',
+                    'नोटिफिकेशन के अनुसार, स्नातक और 12वीं पास उम्मीदवारों के लिए तकनीकी सहायक, स्टेशन मास्टर, क्लर्क और प्रशासनिक अधिकारियों के पदों पर पारदर्शी कंप्यूटर आधारित परीक्षा (CBT) आयोजित की जाएगी।',
+                    'अभ्यर्थियों को सलाह दी गई है कि वे अंतिम तिथि की प्रतीक्षा किए बिना आधिकारिक पोर्टल पर अपने दस्तावेज अपलोड कर आवेदन प्रक्रिया समय से पूरी कर लें।'
+                ]
+            },
+            {
+                id: 'art-ai-tech',
+                title: 'एआई और डिजिटल इंडिया 2026: भारतीय भाषाओं में काम करने वाला स्वदेशी AI मॉडल लॉन्च, किसानों व छात्रों को सीधा लाभ',
+                summary: 'हिंदी सहित 22 भारतीय भाषाओं में आवाज के जरिए सरकारी योजनाओं, मौसम और स्वास्थ्य की सटीक जानकारी देगा नया स्वदेशी एआई प्लेटफॉर्म।',
+                category: 'देश',
+                tag: 'एआई और डिजिटल इंडिया',
+                city: 'बेंगलुरु',
+                author: 'डॉ. राजीव कुलश्रेष्ठ • टेक डेस्क',
+                time: 'Nov 13, 2026 02:50 PM IST',
+                mediaType: 'video',
+                isMiddleFeed: true,
+                isMustRead: false,
+                image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80',
+                body: [
+                    'बेंगलुरु। भारत के आर्टिफिशियल इंटेलिजेंस मिशन के तहत आज एक नया बहुभाषी स्वदेशी एआई प्लेटफॉर्म राष्ट्र को समर्पित किया गया। यह मॉडल हिंदी, भोजपुरी, मराठी, तमिल, बांग्ला सहित 22 भारतीय भाषाओं को सहजता से समझने और उत्तर देने में सक्षम है।',
+                    'इस तकनीक को विशेष रूप से ग्रामीण भारत के किसानों, छात्रों और छोटे व्यापारियों की जरूरतों को ध्यान में रखकर तैयार किया गया है। किसान अपनी स्थानीय बोली में फसल रोग, मंडी भाव और मौसम का पूर्वानुमान तुरंत प्राप्त कर सकेंगे।',
+                    'सूचना प्रौद्योगिकी मंत्रालय के अनुसार, अगले छह महीनों में इसे यूपीआई और ई-संजीवनी टेलीमेडिसिन सेवा के साथ भी एकीकृत किया जाएगा।'
+                ]
+            },
+            {
+                id: 'art-must-1',
+                title: 'LIVE: दिल्ली-एनसीआर और पश्चिमी यूपी में बदला मौसम का मिजाज, सुबह की हल्की धुंध के बाद खिली धूप',
+                summary: 'मौसम विभाग ने अगले 48 घंटों में तापमान में 2 से 3 डिग्री की गिरावट और पहाड़ी इलाकों में बर्फबारी का अनुमान जताया है।',
+                category: 'राज्य',
+                tag: 'यूपी-अलीगढ़ समाचार',
+                city: 'नई दिल्ली',
+                author: 'न्यूज़ डेस्क',
+                time: 'Nov 13, 2026 05:20 PM IST',
+                mediaType: 'none',
+                isMustRead: true,
+                image: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=600&q=80',
+                body: [
+                    'नई दिल्ली। उत्तर भारत में नवंबर के दूसरे सप्ताह के साथ ही गुलाबी ठंड ने दस्तक दे दी है। दिल्ली, नोएडा, गाजियाबाद, अलीगढ़ और मेरठ में सुबह के समय हल्की धुंध देखने को मिली, हालांकि दिन चढ़ने के साथ मौसम साफ हो गया।',
+                    'भारतीय मौसम विज्ञान विभाग (IMD) के मुताबिक, हिमालयी क्षेत्र में सक्रिय हो रहे नए पश्चिमी विक्षोभ के कारण उत्तराखंड और हिमाचल प्रदेश के ऊंचाई वाले इलाकों में हल्की बर्फबारी हो सकती है, जिससे मैदानी इलाकों में रात का तापमान नीचे आएगा।'
+                ]
+            },
+            {
+                id: 'art-must-2',
+                title: 'साइबर सुरक्षा अलर्ट: डिजिटल अरेस्ट और फर्जी कूरियर कॉल से सावधान रहें, गृह मंत्रालय ने जारी की नई एडवाइजरी',
+                summary: 'किसी भी अनजान वीडियो कॉल पर बैंक विवरण साझा न करें, संदिग्ध कॉल की तुरंत 1930 हेल्पलाइन पर शिकायत दर्ज कराएं।',
+                category: 'क्राइम',
+                tag: 'एआई और डिजिटल इंडिया',
+                city: 'नई दिल्ली',
+                author: 'क्राइम ब्यूरो',
+                time: 'Nov 13, 2026 04:05 PM IST',
+                mediaType: 'none',
+                isMustRead: true,
+                image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80',
+                body: [
+                    'नई दिल्ली। ऑनलाइन ठगी के बढ़ते मामलों पर लगाम लगाने के लिए भारतीय साइबर अपराध समन्वय केंद्र (I4C) ने नागरिकों के लिए नई सुरक्षा एडवाइजरी जारी की है। इसमें स्पष्ट किया गया है कि पुलिस, सीबीआई या कस्टम विभाग कभी भी वीडियो कॉल के जरिए किसी को डिजिटल अरेस्ट नहीं करता।',
+                    'यदि किसी नागरिक को इस तरह की धमकी भरी कॉल आती है, तो घबराने के बजाय तुरंत कॉल काट दें और राष्ट्रीय साइबर हेल्पलाइन नंबर 1930 या cybercrime.gov.in पर अपनी शिकायत दर्ज कराएं।'
+                ]
+            },
+            {
+                id: 'art-must-3',
+                title: 'बॉलीवुड बॉक्स ऑफिस: पारिवारिक और देशभक्ति फिल्मों का दर्शकों पर चला जादू, पहले ही दिन रिकॉर्ड एडवांस बुकिंग',
+                summary: 'देशभर के मल्टीप्लेक्स और सिंगल स्क्रीन सिनेमाघरों में वीकेंड के लिए 85 प्रतिशत से अधिक टिकट पहले ही बुक हो चुके हैं।',
+                category: 'मनोरंजन',
+                tag: 'बॉलीवुड बॉक्स ऑफिस',
+                city: 'मुंबई',
+                author: 'प्रिया सिंह • मनोरंजन डेस्क',
+                time: 'Nov 13, 2026 03:15 PM IST',
+                mediaType: 'photo',
+                isMustRead: true,
+                image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80',
+                body: [
+                    'मुंबई। भारतीय सिनेमाघरों में इस सप्ताह रिलीज हुई नई पारिवारिक ड्रामा फिल्म को दर्शकों और समीक्षकों से जबरदस्त प्रतिक्रिया मिल रही है। दिल्ली, मुंबई, लखनऊ, जयपुर और पटना के प्रमुख सिनेमाघरों में सुबह के शो भी हाउसफुल चल रहे हैं।',
+                    'ट्रेड विश्लेषकों के अनुसार, मजबूत कहानी और मधुर संगीत के कारण फिल्म पहले सप्ताहांत में ही 100 करोड़ क्लब में शामिल होने की ओर बढ़ रही है।'
+                ]
+            },
+            {
+                id: 'art-must-4',
+                title: 'विदेश नीति: भारत और यूरोपीय संघ के बीच स्वच्छ ऊर्जा व व्यापार समझौते पर अगले दौर की वार्ता सफल',
+                summary: 'हरित हाइड्रोजन, सौर ऊर्जा उपकरण और फार्मास्युटिकल निर्यात को बढ़ावा देने पर दोनों पक्षों में बनी सहमति।',
+                category: 'विदेश',
+                tag: 'विकसित भारत मिशन 2026',
+                city: 'नई दिल्ली',
+                author: 'अंतरराष्ट्रीय डेस्क',
+                time: 'Nov 13, 2026 02:20 PM IST',
+                mediaType: 'none',
+                isMustRead: true,
+                image: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=600&q=80',
+                body: [
+                    'नई दिल्ली। भारत और यूरोपीय संघ (EU) के वरिष्ठ व्यापार प्रतिनिधियों के बीच मुक्त व्यापार और स्वच्छ ऊर्जा साझेदारी को लेकर हुई उच्चस्तरीय बैठक सकारात्मक रही। दोनों पक्षों ने आपूर्ति श्रृंखला को मजबूत करने और हरित प्रौद्योगिकी हस्तांतरण पर सहमति व्यक्त की।',
+                    'इससे भारतीय आईटी पेशेवरों, वस्त्र उद्योग और दवा निर्माताओं को यूरोपीय बाजारों में नए अवसर प्राप्त होंगे।'
+                ]
+            },
+            {
+                id: 'art-digital-india',
+                title: 'NEW RISING INDIA SPECIAL: डिजिटल भारत और युवा रोजगार मिशन 2026 से गांव-गांव पहुंच रही आधुनिक शिक्षा',
+                summary: 'ई-लर्निंग लैब्स, हाई-स्पीड भारतनेट फाइबर और स्टार्टअप सीड फंड से छोटे शहरों के युवा तैयार कर रहे वैश्विक उत्पाद।',
+                category: 'देश',
+                tag: 'एआई और डिजिटल इंडिया',
+                city: 'लखनऊ',
+                author: 'संपादकीय टीम • NEW RISING INDIA',
+                time: 'Nov 13, 2026 01:40 PM IST',
+                mediaType: 'photo',
+                isMustRead: false,
+                image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80',
+                body: [
+                    'लखनऊ / नई दिल्ली। भारत की डिजिटल क्रांति अब केवल महानगरों तक सीमित नहीं रही है। टियर-2 और टियर-3 शहरों के युवा आज आर्टिफिशियल इंटेलिजेंस, क्लाउड कंप्यूटिंग, ई-कॉमर्स और आधुनिक कृषि तकनीक के क्षेत्र में नए स्टार्टअप खड़े कर रहे हैं।',
+                    'NEW RISING INDIA की विशेष ग्राउंड रिपोर्ट के अनुसार, उत्तर प्रदेश, बिहार, राजस्थान और मध्य प्रदेश के 400 से अधिक जिलों में स्थापित डिजिटल कौशल केंद्रों से प्रशिक्षण प्राप्त कर चुके लाखों युवा आज आत्मनिर्भर बनकर दूसरों को भी रोजगार दे रहे हैं।'
+                ]
+            },
+            {
+                id: 'art-rashifal',
+                title: 'धर्म और राशिफल: देवउठनी एकादशी के बाद मांगलिक कार्यों की धूम, जानें सभी 12 राशियों का साप्ताहिक फल',
+                summary: 'ज्योतिषाचार्यों के अनुसार इस सप्ताह गुरु और शुक्र की शुभ स्थिति से व्यापार, शिक्षा और पारिवारिक जीवन में सकारात्मक बदलाव आएंगे।',
+                category: 'राशिफल',
+                tag: 'राशिफल आज का',
+                city: 'वाराणसी',
+                author: 'आचार्य देवव्रत शास्त्री • धर्म डेस्क',
+                time: 'Nov 13, 2026 11:30 AM IST',
+                mediaType: 'none',
+                isMustRead: false,
+                image: 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=800&q=80',
+                body: [
+                    'वाराणसी। भारतीय पंचांग के अनुसार कार्तिक शुक्ल पक्ष के पावन पर्वों के साथ ही देशभर में विवाह और मांगलिक कार्यों का शुभ मुहूर्त प्रारंभ हो चुका है। काशी और प्रयागराज के मंदिरों में श्रद्धालुओं की भारी भीड़ उमड़ रही है।',
+                    'ज्योतिषीय गणना के अनुसार मेष, वृषभ, सिंह और मकर राशि के जातकों के लिए यह समय करियर में पदोन्नति और आर्थिक मजबूती लेकर आया है, जबकि मिथुन और तुला राशि वालों को नए निवेश से लाभ होगा।'
+                ]
+            }
+        ];
+
+        // Application State
+        let state = {
+            activeCategory: 'होम',
+            activeTag: null,
+            activeCity: null,
+            activeMediaFilter: null,
+            searchQuery: ''
+        };
+
+        // Initialize UI on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            renderTrendingTags();
+            renderNewsFeed();
+        });
+
+        // Render Top Category Navigation & Drawer Categories
+        function renderCategories() {
+            const navContainer = document.getElementById('categoryNav');
+            const drawerContainer = document.getElementById('drawerCategories');
+
+            navContainer.innerHTML = CATEGORIES.map(cat => {
+                const isActive = state.activeCategory === cat && !state.activeTag && !state.activeMediaFilter;
+                return `
+                    <button onclick="selectCategory('${cat}', event)" 
+                        class="px-3.5 py-1.5 rounded-full text-sm font-bold whitespace-nowrap transition cursor-pointer ${
+                            isActive 
+                            ? 'bg-brandSoftRed text-brandRed' 
+                            : 'text-gray-800 hover:text-brandRed hover:bg-gray-50'
+                        }">
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+
+            drawerContainer.innerHTML = CATEGORIES.map(cat => `
+                <button onclick="toggleDrawer(false); selectCategory('${cat}', event);" 
+                    class="px-3 py-2 rounded-lg text-sm font-semibold text-left border border-gray-100 hover:border-brandBorderRed hover:bg-brandSoftRed hover:text-brandRed transition">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        // Render Trending Pills Carousel
+        function renderTrendingTags() {
+            const container = document.getElementById('trendingTagsContainer');
+            container.innerHTML = TRENDING_TAGS.map(tag => {
+                const isSelected = state.activeTag === tag;
+                return `
+                    <button onclick="selectTrendingTag('${tag}')" 
+                        class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap border transition cursor-pointer ${
+                            isSelected
+                            ? 'bg-brandRed text-white border-brandRed shadow-xs'
+                            : 'bg-white text-gray-800 border-brandBorderRed hover:bg-brandSoftRed hover:text-brandRed'
+                        }">
+                        ${tag}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // Scroll Trending Pills Left/Right
+        function scrollTags(offset) {
+            const container = document.getElementById('trendingTagsContainer');
+            container.scrollBy({ left: offset, behavior: 'smooth' });
+        }
+
+        // Filter Handlers
+        function selectCategory(category, event) {
+            if (event) event.preventDefault();
+            closeArticleReader();
+
+            if (category === 'लाइव स्कोर') {
+                openLiveScoreModal();
+                return;
+            }
+            if (category === 'धर्म') {
+                state.activeCategory = 'राशिफल';
+            } else {
+                state.activeCategory = category;
+            }
+            state.activeTag = null;
+            state.activeMediaFilter = null;
+            state.searchQuery = '';
+            document.getElementById('desktopSearchInput').value = '';
+
+            renderCategories();
+            renderTrendingTags();
+            renderNewsFeed();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectTrendingTag(tag) {
+            closeArticleReader();
+            state.activeTag = (state.activeTag === tag) ? null : tag;
+            state.activeMediaFilter = null;
+            renderCategories();
+            renderTrendingTags();
+            renderNewsFeed();
+        }
+
+        function selectCity(city) {
+            document.getElementById('cityDropdown').classList.add('hidden');
+            closeArticleReader();
+            if (city === 'सभी शहर') {
+                state.activeCity = null;
+                document.getElementById('selectedCityLabel').textContent = 'शहर चुनें';
+                showToast('सभी शहरों की राष्ट्रीय खबरें दिखाई जा रही हैं');
+            } else {
+                state.activeCity = city;
+                document.getElementById('selectedCityLabel').textContent = city;
+                showToast(`${city} की प्रमुख खबरें चुनी गईं`);
+            }
+            renderNewsFeed();
+        }
+
+        function filterByMedia(type) {
+            closeArticleReader();
+            state.activeMediaFilter = type;
+            state.activeTag = null;
+            renderCategories();
+            renderTrendingTags();
+            renderNewsFeed();
+            showToast(type === 'video' ? 'वीडियो समाचार दिखाए जा रहे हैं' : 'फोटो गैलरी समाचार दिखाए जा रहे हैं');
+        }
+
+        function handleSearch(query) {
+            closeArticleReader();
+            state.searchQuery = query.trim().toLowerCase();
+            renderNewsFeed();
+        }
+
+        function resetToHome(event) {
+            if (event) event.preventDefault();
+            closeArticleReader();
+            state = {
+                activeCategory: 'होम',
+                activeTag: null,
+                activeCity: null,
+                activeMediaFilter: null,
+                searchQuery: ''
+            };
+            document.getElementById('selectedCityLabel').textContent = 'शहर चुनें';
+            document.getElementById('desktopSearchInput').value = '';
+            renderCategories();
+            renderTrendingTags();
+            renderNewsFeed();
+        }
+
+        // Main Feed Rendering Engine
+        function renderNewsFeed() {
+            let filtered = [...NEWS_ARTICLES];
+
+            // Apply Category Filter
+            if (state.activeCategory && state.activeCategory !== 'होम') {
+                filtered = filtered.filter(a => a.category === state.activeCategory);
+            }
+
+            // Apply Tag Filter
+            if (state.activeTag) {
+                filtered = filtered.filter(a => a.tag === state.activeTag);
+            }
+
+            // Apply Media Filter
+            if (state.activeMediaFilter) {
+                filtered = filtered.filter(a => a.mediaType === state.activeMediaFilter);
+            }
+
+            // Apply Search Filter
+            if (state.searchQuery) {
+                filtered = filtered.filter(a =>
+                    a.title.toLowerCase().includes(state.searchQuery) ||
+                    a.summary.toLowerCase().includes(state.searchQuery) ||
+                    a.city.toLowerCase().includes(state.searchQuery) ||
+                    a.category.toLowerCase().includes(state.searchQuery)
+                );
+            }
+
+            // Sort city preference to top if selected
+            if (state.activeCity) {
+                filtered.sort((a, b) => (b.city === state.activeCity ? 1 : 0) - (a.city === state.activeCity ? 1 : 0));
+            }
+
+            // Update Active Filter Banner & Main Section Heading
+            const filterBar = document.getElementById('activeFilterBar');
+            const filterText = document.getElementById('activeFilterText');
+            const heading = document.getElementById('mainSectionHeading');
+
+            const activeFilters = [];
+            if (state.activeCategory !== 'होम') activeFilters.push(`श्रेणी: ${state.activeCategory}`);
+            if (state.activeTag) activeFilters.push(`ट्रेंडिंग: #${state.activeTag}`);
+            if (state.activeCity) activeFilters.push(`शहर: ${state.activeCity}`);
+            if (state.activeMediaFilter) activeFilters.push(state.activeMediaFilter === 'video' ? 'वीडियो न्यूज़' : 'फोटो गैलरी');
+            if (state.searchQuery) activeFilters.push(`खोज: "${state.searchQuery}"`);
+
+            if (activeFilters.length > 0) {
+                filterBar.classList.remove('hidden');
+                filterText.textContent = activeFilters.join('  •  ');
+                heading.textContent = state.activeCategory !== 'होम' ? `${state.activeCategory} समाचार` : 'फ़िल्टर की गई खबरें';
+            } else {
+                filterBar.classList.add('hidden');
+                heading.textContent = 'Top Hindi News';
+            }
+
+            // Fallback if no articles match strict search
+            if (filtered.length === 0) {
+                document.getElementById('leadStoryContainer').innerHTML = `
+                    <div class="col-span-full p-8 text-center border border-gray-200 rounded-2xl bg-gray-50">
+                        <i class="fa-regular fa-newspaper text-4xl text-gray-300 mb-3"></i>
+                        <h3 class="text-base font-bold text-gray-800">इस खोज से जुड़ी कोई खबर नहीं मिली</h3>
+                        <p class="text-xs text-gray-500 mt-1 mb-4">कृपया दूसरा शब्द खोजें या सभी मुख्य खबरें देखें।</p>
+                        <button onclick="resetToHome()" class="px-4 py-2 bg-brandRed text-white text-xs font-bold rounded-full">सभी खबरें देखें</button>
+                    </div>
+                `;
+                document.getElementById('middleFeedContainer').innerHTML = '';
+                document.getElementById('moreNewsGrid').innerHTML = '';
+                return;
+            }
+
+            // 1. Lead Featured Card + Sub-Lead Card (Left Editorial Column)
+            const leadArticle = filtered[0];
+            const subLeadArticle = filtered[1] || NEWS_ARTICLES[1];
+
+            document.getElementById('leadStoryContainer').innerHTML = `
+                <!-- Main Hero Card with Bottom Gradient Overlay (Matches Hindustan Reference) -->
+                <article onclick="openArticleById('${leadArticle.id}')" class="group cursor-pointer rounded-xl overflow-hidden shadow-sm border border-gray-200 bg-white">
+                    <div class="relative aspect-16/10 w-full overflow-hidden bg-gray-900">
+                        <img src="${leadArticle.image}" alt="${leadArticle.title}" 
+                             onerror="this.src='https://placehold.co/800x500/D91E2A/FFFFFF?text=NEW+RISING+INDIA'"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent"></div>
+                        
+                        ${leadArticle.mediaType === 'video' ? `
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="w-12 h-12 rounded-full bg-black/65 border-2 border-white text-white flex items-center justify-center shadow-lg group-hover:bg-brandRed transition">
+                                    <i class="fa-solid fa-play text-base ml-0.5"></i>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                            <span class="px-2.5 py-0.5 rounded bg-brandRed text-white text-[11px] font-bold shadow-xs">
+                                ${leadArticle.category}
+                            </span>
+                            <span class="px-2 py-0.5 rounded bg-black/65 text-white text-[11px] font-medium">
+                                ${leadArticle.city}
+                            </span>
+                        </div>
+
+                        <div class="absolute bottom-0 inset-x-0 p-4">
+                            <h2 class="text-white text-lg sm:text-xl font-extrabold leading-snug group-hover:text-amber-200 transition">
+                                ${leadArticle.title}
+                            </h2>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Secondary Sub-Story Below Lead Card (Matches Reference) -->
+                ${subLeadArticle && subLeadArticle.id !== leadArticle.id ? `
+                    <article onclick="openArticleById('${subLeadArticle.id}')" class="group cursor-pointer flex gap-3.5 pt-2 border-t border-gray-200">
+                        <div class="relative w-28 sm:w-32 h-20 sm:h-22 rounded-lg overflow-hidden shrink-0 bg-gray-100">
+                            <img src="${subLeadArticle.image}" alt="${subLeadArticle.title}"
+                                 onerror="this.src='https://placehold.co/300x200/D91E2A/FFFFFF?text=NRI+NEWS'"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            ${subLeadArticle.mediaType === 'photo' ? `
+                                <span class="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-black/70 text-white flex items-center justify-center text-[10px]">
+                                    <i class="fa-regular fa-image"></i>
+                                </span>
+                            ` : ''}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-sm sm:text-[15px] font-bold text-gray-900 leading-snug group-hover:text-brandRed transition line-clamp-3">
+                                ${subLeadArticle.title}
+                            </h3>
+                            <div class="mt-1.5 flex items-center gap-2 text-[11px] text-gray-500 font-inter">
+                                <span class="text-brandRed font-sans font-bold">${subLeadArticle.city}</span>
+                                <span>•</span>
+                                <span>${subLeadArticle.time}</span>
+                            </div>
+                        </div>
+                    </article>
+                ` : ''}
+            `;
+
+            // 2. Middle News Feed List (Right-aligned Thumbnails matching Reference)
+            const middleItems = filtered.slice(2, 6);
+            const displayMiddle = middleItems.length > 0 ? middleItems : NEWS_ARTICLES.slice(2, 6);
+
+            document.getElementById('middleFeedContainer').innerHTML = displayMiddle.map((item, idx) => `
+                <article onclick="openArticleById('${item.id}')" class="group cursor-pointer flex items-start justify-between gap-3.5 ${idx === 0 ? 'pb-3.5' : 'py-3.5'}">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <span class="text-[11px] font-bold text-brandRed">${item.category}</span>
+                            <span class="text-gray-300 text-xs">•</span>
+                            <span class="text-[11px] text-gray-500 font-medium">${item.city}</span>
+                        </div>
+                        <h3 class="text-sm sm:text-[15px] font-bold text-gray-900 leading-snug group-hover:text-brandRed transition line-clamp-3">
+                            ${item.title}
+                        </h3>
+                        <p class="mt-1.5 text-[11px] text-gray-400 font-inter">
+                            ${item.time}
+                        </p>
+                    </div>
+                    <div class="relative w-24 sm:w-28 h-20 rounded-lg overflow-hidden shrink-0 bg-gray-100 border border-gray-100">
+                        <img src="${item.image}" alt="${item.title}"
+                             onerror="this.src='https://placehold.co/300x200/D91E2A/FFFFFF?text=NRI'"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        ${item.mediaType === 'video' ? `
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+                                <span class="w-7 h-7 rounded-full bg-black/70 border border-white text-white flex items-center justify-center text-[10px]">
+                                    <i class="fa-solid fa-play ml-0.5"></i>
+                                </span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </article>
+            `).join('');
+
+            // 3. Must Read Sidebar ('जरूर पढ़ें')
+            const mustReadItems = NEWS_ARTICLES.filter(a => a.isMustRead);
+            document.getElementById('mustReadContainer').innerHTML = mustReadItems.map(item => `
+                <article onclick="openArticleById('${item.id}')" class="group cursor-pointer py-3 flex items-start gap-3">
+                    <div class="w-20 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
+                        <img src="${item.image}" alt="${item.title}"
+                             onerror="this.src='https://placehold.co/240x180/D91E2A/FFFFFF?text=NRI'"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs sm:text-[13px] font-bold text-gray-900 leading-snug group-hover:text-brandRed transition line-clamp-3">
+                            ${item.title}
+                        </h4>
+                        <span class="block mt-1 text-[10px] text-gray-400 font-inter">${item.time}</span>
+                    </div>
+                </article>
+            `).join('');
+
+            // 4. More News Below Fold
+            const moreItems = NEWS_ARTICLES.slice(6);
+            document.getElementById('moreNewsGrid').innerHTML = moreItems.map(item => `
+                <article onclick="openArticleById('${item.id}')" class="group cursor-pointer rounded-xl border border-gray-200 p-3 flex gap-3 hover:border-brandBorderRed hover:shadow-xs transition bg-white">
+                    <img src="${item.image}" alt="${item.title}"
+                         onerror="this.src='https://placehold.co/300x200/D91E2A/FFFFFF?text=NRI'"
+                         class="w-24 h-20 rounded-lg object-cover shrink-0">
+                    <div class="min-w-0 flex-1">
+                        <span class="text-[11px] font-bold text-brandRed">${item.category} • ${item.city}</span>
+                        <h3 class="text-sm font-bold text-gray-900 leading-snug group-hover:text-brandRed transition line-clamp-2 mt-0.5">
+                            ${item.title}
+                        </h3>
+                        <span class="block mt-1.5 text-[11px] text-gray-400 font-inter">${item.time}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Open Full Article Reader View
+        function openArticleById(articleId) {
+            const article = NEWS_ARTICLES.find(a => a.id === articleId);
+            if (!article) return;
+
+            document.getElementById('homeGridView').classList.add('hidden');
+            const readerView = document.getElementById('articleReaderView');
+            readerView.classList.remove('hidden');
+
+            const contentArea = document.getElementById('articleContentArea');
+            contentArea.innerHTML = `
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-3 py-1 rounded-full bg-brandSoftRed text-brandRed text-xs font-extrabold">${article.category}</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">${article.city}</span>
+                    <span class="text-xs text-gray-500 font-inter ml-auto">${article.time}</span>
+                </div>
+
+                <h1 class="text-xl sm:text-3xl font-extrabold text-gray-900 leading-tight mb-3">
+                    ${article.title}
+                </h1>
+
+                <p class="text-sm sm:text-base text-gray-600 font-medium leading-relaxed mb-4 pb-4 border-b border-gray-200">
+                    ${article.summary}
+                </p>
+
+                <!-- Author & Share Toolbar -->
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-full bg-brandRed text-white flex items-center justify-center font-bold text-sm">
+                            ${article.author.charAt(0)}
+                        </div>
+                        <div>
+                            <div class="text-xs sm:text-sm font-bold text-gray-900">${article.author}</div>
+                            <div class="text-[11px] text-gray-500">NEW RISING INDIA डिजिटल न्यूज़ नेटवर्क</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="shareArticle('${article.title.replace(/'/g, "\\'")}')" class="px-3 py-1.5 rounded-full bg-green-600 hover:bg-green-700 text-white text-xs font-bold flex items-center gap-1.5 transition">
+                            <i class="fa-brands fa-whatsapp text-sm"></i> शेयर करें
+                        </button>
+                        <button onclick="copyArticleLink('${article.title.replace(/'/g, "\\'")}')" class="px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold flex items-center gap-1.5 transition">
+                            <i class="fa-regular fa-copy"></i> लिंक कॉपी करें
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hero Photo -->
+                <div class="rounded-xl overflow-hidden mb-6 border border-gray-200 bg-gray-100">
+                    <img src="${article.image}" alt="${article.title}" 
+                         onerror="this.src='https://placehold.co/900x500/D91E2A/FFFFFF?text=NEW+RISING+INDIA'"
+                         class="w-full max-h-[460px] object-cover">
+                    <div class="px-4 py-2 bg-gray-50 text-[11px] text-gray-500 border-t border-gray-200">
+                        फाइल फोटो • NEW RISING INDIA (${article.city})
+                    </div>
+                </div>
+
+                <!-- Full Multi-Paragraph Story -->
+                <div class="space-y-4 text-base sm:text-[17px] text-gray-800 leading-8">
+                    ${article.body.map(para => `<p>${para}</p>`).join('')}
+                </div>
+
+                <!-- Tags Footer -->
+                <div class="mt-8 pt-4 border-t border-gray-200 flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-bold text-gray-500">टैग्स:</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">#${article.tag}</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">#${article.city}</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">#NewRisingIndia</span>
+                </div>
+            `;
+
+            // Populate Related Articles
+            const related = NEWS_ARTICLES.filter(a => a.id !== article.id).slice(0, 5);
+            document.getElementById('relatedArticlesContainer').innerHTML = related.map(rel => `
+                <article onclick="openArticleById('${rel.id}')" class="group cursor-pointer py-3.5 flex items-start gap-3">
+                    <img src="${rel.image}" alt="${rel.title}" class="w-20 h-16 rounded-lg object-cover shrink-0">
+                    <div>
+                        <span class="text-[10px] font-bold text-brandRed">${rel.category}</span>
+                        <h4 class="text-xs sm:text-sm font-bold text-gray-900 leading-snug group-hover:text-brandRed transition line-clamp-2">
+                            ${rel.title}
+                        </h4>
+                    </div>
+                </article>
+            `).join('');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeArticleReader() {
+            document.getElementById('articleReaderView').classList.add('hidden');
+            document.getElementById('homeGridView').classList.remove('hidden');
+        }
+
+        // Copy Link Helper using document.execCommand('copy')
+        function copyArticleLink(title) {
+            const tempInput = document.createElement('input');
+            tempInput.value = `${title} - NEW RISING INDIA (${window.location.href})`;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast('खबर का लिंक क्लिपबोर्ड पर कॉपी हो गया है!');
+        }
+
+        function shareArticle(title) {
+            copyArticleLink(title);
+            showToast('व्हाट्सएप पर साझा करने के लिए लिंक कॉपी किया गया!');
+        }
+
+        // Drawer & Dropdown Controls
+        function toggleDrawer(open) {
+            const drawer = document.getElementById('sideDrawer');
+            const overlay = document.getElementById('sideDrawerOverlay');
+            if (open) {
+                overlay.classList.remove('hidden');
+                drawer.classList.remove('-translate-x-full');
+            } else {
+                overlay.classList.add('hidden');
+                drawer.classList.add('-translate-x-full');
+            }
+        }
+
+        function toggleCityDropdown() {
+            document.getElementById('cityDropdown').classList.toggle('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('cityDropdown');
+            if (dropdown && !dropdown.parentElement.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Modal Controls
+        function openEPaperModal() {
+            closeAllModals();
+            document.getElementById('modalBackdrop').classList.remove('hidden');
+            document.getElementById('ePaperModal').classList.remove('hidden');
+        }
+
+        function openLiveScoreModal() {
+            closeAllModals();
+            document.getElementById('modalBackdrop').classList.remove('hidden');
+            document.getElementById('liveScoreModal').classList.remove('hidden');
+        }
+
+        function openRashifalModal() {
+            closeAllModals();
+            document.getElementById('modalBackdrop').classList.remove('hidden');
+            document.getElementById('rashifalModal').classList.remove('hidden');
+        }
+
+        function openSignInModal() {
+            closeAllModals();
+            document.getElementById('modalBackdrop').classList.remove('hidden');
+            document.getElementById('signInModal').classList.remove('hidden');
+        }
+
+        function closeAllModals() {
+            document.getElementById('modalBackdrop').classList.add('hidden');
+            document.getElementById('ePaperModal').classList.add('hidden');
+            document.getElementById('liveScoreModal').classList.add('hidden');
+            document.getElementById('rashifalModal').classList.add('hidden');
+            document.getElementById('signInModal').classList.add('hidden');
+        }
+
+        function handleSignInSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('readerNameInput').value.trim();
+            if (name) {
+                document.getElementById('signInLabel').textContent = name.split(' ')[0];
+                closeAllModals();
+                showToast(`स्वागत है ${name}! आपका पाठक खाता सक्रिय हो गया है।`);
+            }
+        }
+
+        // Custom Toast Notification (No alert() used)
+        let toastTimer;
+        function showToast(message) {
+            const banner = document.getElementById('toastBanner');
+            const msgEl = document.getElementById('toastMessage');
+            msgEl.textContent = message;
+            banner.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                banner.classList.remove('translate-y-4', 'opacity-0');
+            });
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                banner.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => banner.classList.add('hidden'), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
